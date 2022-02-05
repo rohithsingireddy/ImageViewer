@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <object class="GtkApplicationWindow" id="app_window">
+        <property name="title" translatable="yes">Image Viewer </property>
+        <property name="default-width">500</property>
+        <property name="default-height">500</property>
+        <property name="hide-on-close">True</property>
+        <child type="titlebar">
+            <object class="GtkHeaderBar" id="header">
+                <child type="title">
+                    <object class="GtkStackSwitcher" id="tabs">
+                        <property name="stack">stack</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkBox" id="content_box">
+                <child>
+                    <object class="GtkStack" id="stack">
+                        <property name="transition-duration">500</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
