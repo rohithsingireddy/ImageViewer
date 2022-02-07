@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/ImageViewer",
-            "args": [],
+            "args": ["fileToTest.jpg"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
