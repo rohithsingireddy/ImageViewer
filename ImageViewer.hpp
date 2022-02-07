@@ -2,6 +2,7 @@
 #define IMAGE_VIEWER_GUARD
 
 #include <gtkmm/application.h>
+#include <gtkmm/filechooserdialog.h>
 #include "ImageViewerWindow.hpp"
 
 class ImageViewer : public Gtk::Application
@@ -18,6 +19,21 @@ private:
      * from the user
      */
     void on_hide_window(Gtk::Window *window);
+
+    /**
+     * Method to call when the app is quit
+     */
+    void on_action_quit_app(); 
+
+    /**
+     * Opens a file dialog for choosing images
+     */
+    void open_file_dialog(); 
+
+    /**
+     * Opens a file choosen by file dialog
+     */
+    void on_image_choose(int response_id, Gtk::FileChooserDialog *dialog); 
 
 protected:
     /**
@@ -36,6 +52,8 @@ protected:
      * Overriding a Gtk::Application method
      */
     void on_startup() override;
+
+
 
 public:
     /**
