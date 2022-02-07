@@ -2,5 +2,6 @@
 <gresources>
     <gresource prefix="/org/mt/imageviewer">
         <file preprocess="xml-stripblanks">window.ui</file>
+        <file preprocess="xml-stripblanks">menuItems.ui</file>
     </gresource>
 </gresources>
