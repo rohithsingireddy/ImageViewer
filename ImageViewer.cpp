@@ -75,3 +75,12 @@ void ImageViewer::on_open(
     }
     
 }
+
+void ImageViewer::on_startup()
+{
+    Gtk::Application::on_startup();
+
+    add_action(
+        "quit"
+    );
+}

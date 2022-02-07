@@ -32,6 +32,11 @@ protected:
         const Gio::Application::type_vec_files &files,
         const Glib::ustring &);
 
+    /**
+     * Overriding a Gtk::Application method
+     */
+    void on_startup() override;
+
 public:
     /**
      * Constructor

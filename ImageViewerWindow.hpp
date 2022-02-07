@@ -1,6 +1,7 @@
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/stack.h>
+#include <gtkmm/menubutton.h>
 
 class ImageViewerWindow : public Gtk::ApplicationWindow
 {
@@ -28,4 +29,5 @@ protected:
     Glib::RefPtr<Gtk::Builder> m_refBuilder; 
     // Stores a pointer to stack layout ui
     Gtk::Stack *m_stack;
+    Gtk::MenuButton *m_menu_button;
 };
