@@ -18,10 +18,14 @@ public:
      */
     static ImageViewerWindow *create();
 
+    /**
+     * Creates and opens image view
+     */
+    void open_image_view(Glib::RefPtr<Gio::File> &file);
 protected:
     
     // Stores a pointer to builder containing window.ui 
     Glib::RefPtr<Gtk::Builder> m_refBuilder; 
     // Stores a pointer to stack layout ui
-    Glib::RefPtr<Gtk::Stack> m_stack;
+    Gtk::Stack *m_stack;
 };

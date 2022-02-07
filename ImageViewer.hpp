@@ -21,9 +21,16 @@ private:
 
 protected:
     /**
-     * Overrideing a Gtk::Application method
+     * Overriding a Gtk::Application method
      */
     void on_activate() override;
+
+    /**
+     * Overriding a Gtk::Application method
+     */
+    void on_open(
+        const Gio::Application::type_vec_files &files,
+        const Glib::ustring &);
 
 public:
     /**

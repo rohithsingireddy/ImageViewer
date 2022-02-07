@@ -46,3 +46,32 @@ void ImageViewer::on_activate()
         std::cerr << "ImageViewer::on_activate(): " << e.what() << std::endl;
     }
 }
+
+void ImageViewer::on_open(
+    const Gio::Application::type_vec_files &files,
+    const Glib::ustring &)
+{
+    ImageViewerWindow *app_window = nullptr;
+    auto window = get_windows();
+    if( window.size() > 0 )
+    {
+        app_window = dynamic_cast<ImageViewerWindow *>(window[0]);
+    }
+    try
+    {
+        if(!app_window)
+        {
+            app_window = create_window();
+        }
+        for( auto file: files )
+        {
+            app_window->open_image_view(file);
+        }
+        app_window->present();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "ImageViewer::on_open(): " << e.what() << std::endl;
+    }
+    
+}
