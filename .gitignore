@@ -1,3 +1,9 @@
 fileToTest.jpg
 
 ImageViewer
+
+CustomDrawingArea.o
+ImageViewer.o
+ImageViewerWindow.o
+ui_resources/resources.c
+ui_resources/resources.o

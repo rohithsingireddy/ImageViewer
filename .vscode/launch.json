@@ -23,7 +23,7 @@
                 }
             ],
             "preLaunchTask": "build",
-            "postDebugTask": "clean",
+            // "postDebugTask": "clean",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
