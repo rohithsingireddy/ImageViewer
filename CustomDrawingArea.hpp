@@ -27,12 +27,14 @@ protected:
 
 private:
     double m_drag_x, m_drag_y, m_offset_x, m_offset_y;
+    std::vector<std::pair<double, double>> m_changes;
     enum Drag_Status{
         NONE,
         BEGIN,
         UPDATE,
         END
     } m_drag_status;
+
     void on_drag_begin(double start_x, double start_y);
     void on_drag_update(double offset_x, double offset_y);
     void on_drag_end(double offset_x, double offset_y);
