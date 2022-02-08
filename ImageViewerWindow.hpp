@@ -3,6 +3,8 @@
 #include <gtkmm/stack.h>
 #include <gtkmm/menubutton.h>
 
+#include "CustomDrawingArea.hpp"
+
 class ImageViewerWindow : public Gtk::ApplicationWindow
 {
 public:

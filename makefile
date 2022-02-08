@@ -1,8 +1,8 @@
 PROGRAM = ImageViewer
 CFLAGS = $(shell pkg-config --cflags --libs gtkmm-4.0)
-DEPS = ImageViewer.hpp
-CXXFILES = ImageViewerWindow.cpp ImageViewer.cpp main.cpp
-OFILES = ImageViewerWindow.o ImageViewer.o main.o ui_resources/resources.o
+DEPS = ImageViewer.hpp ImageViewerWindow.hpp CustomDrawingArea.hpp
+CXXFILES = CustomDrawingArea.cpp ImageViewerWindow.cpp ImageViewer.cpp main.cpp
+OFILES = CustomDrawingArea.o ImageViewerWindow.o ImageViewer.o main.o ui_resources/resources.o
 
 all: ImageViewer
 
@@ -21,4 +21,4 @@ ui_resources/resources.c: ui_resources/imageViewer.gresource.xml
 clean:
 	rm $(OFILES) -f
 	rm ui_resources/resources.c
-	rm ./ImageViewer
+	# rm ./ImageViewer
