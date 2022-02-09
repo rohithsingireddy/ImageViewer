@@ -2,11 +2,13 @@
 <interface>
     <object class="GtkApplicationWindow" id="app_window">
         <property name="title" translatable="yes">Image Viewer </property>
-        <property name="default-width">500</property>
-        <property name="default-height">500</property>
+        <property name="maximized">True</property>
         <property name="hide-on-close">True</property>
+        <property name="default-width">600</property>
+        <property name="default-height">500</property>
         <child type="titlebar">
             <object class="GtkHeaderBar" id="header">
+                <property name="decoration-layout">icon:close</property>
                 <child type="title">
                     <object class="GtkStackSwitcher" id="tabs">
                         <property name="stack">stack</property>
