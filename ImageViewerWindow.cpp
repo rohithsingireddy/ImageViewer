@@ -10,7 +10,9 @@ ImageViewerWindow::ImageViewerWindow(
     : Gtk::ApplicationWindow(cobject),
       m_refBuilder(refBuilder),
       m_stack(nullptr),
-      m_menu_button(nullptr)
+      m_menu_button(nullptr),
+      m_color_button(nullptr),
+      m_color(0.0, 0.0, 1.0)
 {
     m_stack = m_refBuilder->get_widget<Gtk::Stack>("stack");
     if (!m_stack)
@@ -23,6 +25,18 @@ ImageViewerWindow::ImageViewerWindow(
     {
         throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"menu\" object in window.ui");
     }
+
+    m_color_button = m_refBuilder->get_widget<Gtk::ColorButton>("color_label");
+    if (!m_color_button)
+    {
+        throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"color_label\" in window.ui");
+    }
+    m_color_button->set_rgba(m_color);
+    m_color_button->signal_color_set().connect(
+        sigc::mem_fun(
+            *this,
+            &ImageViewerWindow::on_color_set),
+        false);
 
     auto menuBuilder = Gtk::Builder::create_from_resource("/org/mt/imageviewer/menuItems.ui");
     auto menu = menuBuilder->get_object<Gio::MenuModel>("menu");
@@ -53,7 +67,7 @@ ImageViewerWindow *ImageViewerWindow::create()
 void ImageViewerWindow::open_image_view(Glib::RefPtr<Gio::File> &file)
 {
     auto name = file->get_basename();
-    auto drawingArea = Gtk::make_managed<CustomDrawingArea>(file);
+    auto drawingArea = Gtk::make_managed<CustomDrawingArea>(file, m_color);
     auto scrolledWindow = Gtk::make_managed<CustomScrollableWindow>(drawingArea);
     scrolledWindow->set_expand(true);
     scrolledWindow->set_child(*drawingArea);
@@ -73,4 +87,22 @@ void ImageViewerWindow::save_image_view()
         throw std::runtime_error("ImageViewerWindow::save_image_view(): No drawing area");
     }
     area->set_save_signal();
+}
+
+void ImageViewerWindow::on_color_set()
+{
+    m_color = m_color_button->get_rgba();
+
+    auto tab = dynamic_cast<CustomScrollableWindow *>(m_stack->get_visible_child());
+    if (!tab)
+    {
+        throw std::runtime_error("ImageViewerWindow::save_image_view(): No visible tab");
+    }
+    auto area = tab->get_drawing_area();
+    if (!area)
+    {
+        throw std::runtime_error("ImageViewerWindow::save_image_view(): No drawing area");
+    }
+
+    area->set_color(m_color);
 }

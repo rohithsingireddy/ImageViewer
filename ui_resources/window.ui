@@ -20,6 +20,10 @@
                         <property name="direction">none</property>
                     </object>
                 </child>
+                <child type="end">
+                    <object class="GtkColorButton" id="color_label">
+                    </object>
+                </child>
             </object>
         </child>
 

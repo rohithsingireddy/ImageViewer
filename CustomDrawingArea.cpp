@@ -5,14 +5,14 @@
 #include <gtkmm/gesturedrag.h>
 #include <iostream>
 
-CustomDrawingArea::CustomDrawingArea(Glib::RefPtr<Gio::File> file)
+CustomDrawingArea::CustomDrawingArea(Glib::RefPtr<Gio::File> file, Gdk::RGBA color)
     : m_file(nullptr),
-      m_drag_status(Drag_Status::NONE),
       m_drag_x(0),
       m_drag_y(0),
       m_offset_x(0),
       m_offset_y(0),
-      m_signal_to_save(false)
+      m_signal_to_save(false),
+      m_color(color)
 {
     m_file = file;
     std::string fileName = m_file->get_basename();
@@ -51,6 +51,13 @@ CustomDrawingArea::~CustomDrawingArea()
 {
 }
 
+CustomDrawingArea::changes::changes(double a, double b, Gdk::RGBA c)
+{
+    x = a;
+    y = b;
+    color = c;
+}
+
 void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int width, int height)
 {
     Gdk::Cairo::set_source_pixbuf(
@@ -59,22 +66,24 @@ void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int wid
         (width - m_image->get_width()) / 2,
         (height - m_image->get_height()) / 2);
     cr->paint();
+    cr->save();
     for (auto i : m_changes)
     {
-        draw_circle(cr, i.first, i.second);
+        Gdk::Cairo::set_source_rgba(cr, i.color);
+        draw_circle(cr, i.x, i.y);
     }
     if (m_signal_to_save)
     {
         cr->get_target()->write_to_png(m_file->get_path());
         m_signal_to_save = false;
     }
+    cr->restore();
 }
 
 void CustomDrawingArea::draw_circle(const Cairo::RefPtr<Cairo::Context> &cr, int x, int y)
 {
     cr->arc(x, y, 5.0, 0.0, 2.0 * M_PI); // full circle
     cr->fill();
-    cr->set_source_rgba(0.337, 0.612, 0.117, 0.9);
     cr->stroke();
 }
 
@@ -82,19 +91,27 @@ void CustomDrawingArea::on_drag_begin(double start_x, double start_y)
 {
     m_drag_x = start_x;
     m_drag_y = start_y;
-    m_changes.push_back(std::make_pair(start_x, start_y));
+    m_changes.push_back(CustomDrawingArea::changes(start_x, start_y, m_color));
     queue_draw();
 }
 
 void CustomDrawingArea::on_drag_update(double offset_x, double offset_y)
 {
-    m_changes.push_back(std::make_pair(m_drag_x + offset_x, m_drag_y + offset_y));
+    m_changes.push_back(
+        CustomDrawingArea::changes(
+            m_drag_x + offset_x, 
+            m_drag_y + offset_y, 
+            m_color));
     queue_draw();
 }
 
 void CustomDrawingArea::on_drag_end(double offset_x, double offset_y)
 {
-    m_changes.push_back(std::make_pair(m_drag_x + offset_x, m_drag_y + offset_y));
+    m_changes.push_back(
+        CustomDrawingArea::changes(
+            m_drag_x + offset_x, 
+            m_drag_y + offset_y, 
+            m_color)); 
     queue_draw();
     m_drag_x = 0;
     m_drag_y = 0;
@@ -105,4 +122,9 @@ bool CustomDrawingArea::set_save_signal()
     m_signal_to_save = true;
     queue_draw();
     return true;
+}
+
+void CustomDrawingArea::set_color(Gdk::RGBA color)
+{
+    m_color = color;
 }
