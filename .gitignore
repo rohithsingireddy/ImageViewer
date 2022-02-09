@@ -7,8 +7,7 @@ CustomScrollableWindow.o
 ImageViewer.o
 ImageViewerWindow.o
 
-ui_resources
-    resources.c
-    resources.o
+ui_resources/resources.c
+ui_resources/resources.o
 
 image.png
