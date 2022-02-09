@@ -25,6 +25,7 @@ public:
      * Creates and opens image view
      */
     void open_image_view(Glib::RefPtr<Gio::File> &file);
+    void save_image_view();
 protected:
     
     // Stores a pointer to builder containing window.ui 

@@ -1,6 +1,8 @@
 #include "ImageViewerWindow.hpp"
+#include "CustomScrollableWindow.hpp"
 #include <gtkmm/image.h>
 #include <gtkmm/scrolledwindow.h>
+#include <iostream>
 
 ImageViewerWindow::ImageViewerWindow(
     BaseObjectType *cobject,
@@ -29,6 +31,12 @@ ImageViewerWindow::ImageViewerWindow(
         throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"menu\" object in menuItems.ui");
     }
     m_menu_button->set_menu_model(menu);
+
+    add_action(
+        "save",
+        sigc::mem_fun(
+            *this,
+            &ImageViewerWindow::save_image_view));
 }
 
 ImageViewerWindow *ImageViewerWindow::create()
@@ -45,10 +53,24 @@ ImageViewerWindow *ImageViewerWindow::create()
 void ImageViewerWindow::open_image_view(Glib::RefPtr<Gio::File> &file)
 {
     auto name = file->get_basename();
-    auto drawingArea = Gtk::make_managed<CustomDrawingArea>(file->get_path());
-
-    auto scrolledWindow = Gtk::make_managed<Gtk::ScrolledWindow>();
+    auto drawingArea = Gtk::make_managed<CustomDrawingArea>(file);
+    auto scrolledWindow = Gtk::make_managed<CustomScrollableWindow>(drawingArea);
     scrolledWindow->set_expand(true);
     scrolledWindow->set_child(*drawingArea);
     m_stack->add(*scrolledWindow, name, name);
+}
+
+void ImageViewerWindow::save_image_view()
+{
+    auto tab = dynamic_cast<CustomScrollableWindow *>(m_stack->get_visible_child());
+    if (!tab)
+    {
+        throw std::runtime_error("ImageViewerWindow::save_image_view(): No visible tab");
+    }
+    auto area = tab->get_drawing_area();
+    if (!area)
+    {
+        throw std::runtime_error("ImageViewerWindow::save_image_view(): No drawing area");
+    }
+    area->set_save_signal();
 }

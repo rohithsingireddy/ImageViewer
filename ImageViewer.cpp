@@ -92,6 +92,8 @@ void ImageViewer::on_startup()
             *this,
             &ImageViewer::open_file_dialog));
     set_accel_for_action("app.open", "<Ctrl>O");
+
+    set_accel_for_action("win.save", "<Ctrl>S");
 }
 
 void ImageViewer::on_action_quit_app()
