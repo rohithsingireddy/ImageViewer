@@ -25,6 +25,10 @@ public:
 
     void set_color(Gdk::RGBA color);
 
+    void set_radius(double radius);
+
+    void set_color_alpha(double alpha);
+
 protected:
     /**
      */
@@ -32,18 +36,19 @@ protected:
     Glib::RefPtr<Gio::File> m_file;
 
     void on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int width, int height);
-    void draw_circle(const Cairo::RefPtr<Cairo::Context> &cr, int x, int y);
+    void draw_circle(const Cairo::RefPtr<Cairo::Context> &cr, int x, int y, int radius);
 
 private:
     struct changes
     {
-        double x, y;
+        double x, y, radius;
         Gdk::RGBA color;
-        changes(double a, double b, Gdk::RGBA c);
+        changes(double a, double b, Gdk::RGBA c, double r);
     };
     double m_drag_x, m_drag_y, m_offset_x, m_offset_y;
+    double m_radius, m_alpha;
     bool m_signal_to_save;
-    // std::vector<std::pair<double, double>> m_changes;
+
     std::vector<changes> m_changes;
     Gdk::RGBA m_color;
 

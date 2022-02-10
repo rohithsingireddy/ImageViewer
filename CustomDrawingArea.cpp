@@ -12,7 +12,9 @@ CustomDrawingArea::CustomDrawingArea(Glib::RefPtr<Gio::File> file, Gdk::RGBA col
       m_offset_x(0),
       m_offset_y(0),
       m_signal_to_save(false),
-      m_color(color)
+      m_color(color),
+      m_radius(5.0),
+      m_alpha(1.0)
 {
     m_file = file;
     std::string fileName = m_file->get_basename();
@@ -51,11 +53,12 @@ CustomDrawingArea::~CustomDrawingArea()
 {
 }
 
-CustomDrawingArea::changes::changes(double a, double b, Gdk::RGBA c)
+CustomDrawingArea::changes::changes(double a, double b, Gdk::RGBA c, double r = 5)
 {
     x = a;
     y = b;
     color = c;
+    radius = r;
 }
 
 void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int width, int height)
@@ -70,7 +73,7 @@ void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int wid
     for (auto i : m_changes)
     {
         Gdk::Cairo::set_source_rgba(cr, i.color);
-        draw_circle(cr, i.x, i.y);
+        draw_circle(cr, i.x, i.y, i.radius);
     }
     if (m_signal_to_save)
     {
@@ -80,10 +83,10 @@ void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int wid
     cr->restore();
 }
 
-void CustomDrawingArea::draw_circle(const Cairo::RefPtr<Cairo::Context> &cr, int x, int y)
+void CustomDrawingArea::draw_circle(const Cairo::RefPtr<Cairo::Context> &cr, int x, int y, int radius = 5)
 {
-    cr->arc(x, y, 5.0, 0.0, 2.0 * M_PI); // full circle
-    cr->fill();
+    cr->arc(x, y, radius, 0.0, 2.0 * M_PI); // full circle
+    cr->fill_preserve();
     cr->stroke();
 }
 
@@ -91,7 +94,12 @@ void CustomDrawingArea::on_drag_begin(double start_x, double start_y)
 {
     m_drag_x = start_x;
     m_drag_y = start_y;
-    m_changes.push_back(CustomDrawingArea::changes(start_x, start_y, m_color));
+    m_changes.push_back(
+        CustomDrawingArea::changes(
+            start_x, 
+            start_y, 
+            m_color,
+            m_radius));
     queue_draw();
 }
 
@@ -101,7 +109,8 @@ void CustomDrawingArea::on_drag_update(double offset_x, double offset_y)
         CustomDrawingArea::changes(
             m_drag_x + offset_x, 
             m_drag_y + offset_y, 
-            m_color));
+            m_color,
+            m_radius));
     queue_draw();
 }
 
@@ -111,7 +120,8 @@ void CustomDrawingArea::on_drag_end(double offset_x, double offset_y)
         CustomDrawingArea::changes(
             m_drag_x + offset_x, 
             m_drag_y + offset_y, 
-            m_color)); 
+            m_color,
+            m_radius)); 
     queue_draw();
     m_drag_x = 0;
     m_drag_y = 0;
@@ -127,4 +137,16 @@ bool CustomDrawingArea::set_save_signal()
 void CustomDrawingArea::set_color(Gdk::RGBA color)
 {
     m_color = color;
+    m_color.set_alpha(m_alpha);
+}
+
+void CustomDrawingArea::set_radius(double radius)
+{
+    m_radius = radius;
+}
+
+void CustomDrawingArea::set_color_alpha(double alpha = 1.0)
+{
+    m_alpha = alpha;
+    m_color.set_alpha(alpha);
 }

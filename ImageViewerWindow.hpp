@@ -2,8 +2,8 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/stack.h>
 #include <gtkmm/menubutton.h>
-#include <gtkmm/colorchooserdialog.h>
 #include <gtkmm/colorbutton.h>
+#include <gtkmm/scale.h>
 
 #include "CustomDrawingArea.hpp"
 
@@ -28,7 +28,10 @@ public:
     void open_image_view(Glib::RefPtr<Gio::File> &file);
 
 private:
+    CustomDrawingArea *get_current_drawing_area();
     void save_image_view();
+    void on_radius_slider_change();
+    void on_alpha_slider_change();
 
 protected:
     // Stores a pointer to builder containing window.ui
@@ -37,5 +40,6 @@ protected:
     Gtk::Stack *m_stack;
     Gtk::MenuButton *m_menu_button;
     Gtk::ColorButton *m_color_button;
+    Gtk::Scale *m_radius_scale, *m_alpha_scale;
     Gdk::RGBA m_color;
 };

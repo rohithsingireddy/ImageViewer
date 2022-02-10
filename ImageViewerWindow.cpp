@@ -12,7 +12,9 @@ ImageViewerWindow::ImageViewerWindow(
       m_stack(nullptr),
       m_menu_button(nullptr),
       m_color_button(nullptr),
-      m_color(0.0, 0.0, 1.0)
+      m_color(0.0, 0.0, 1.0),
+      m_radius_scale(nullptr),
+      m_alpha_scale(nullptr)
 {
     m_stack = m_refBuilder->get_widget<Gtk::Stack>("stack");
     if (!m_stack)
@@ -38,6 +40,29 @@ ImageViewerWindow::ImageViewerWindow(
             &ImageViewerWindow::on_color_set),
         false);
 
+    m_radius_scale = m_refBuilder->get_widget<Gtk::Scale>("radius_slider");
+    if (!m_radius_scale)
+    {
+        throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"radius_slider\" object in window.ui");
+    }
+    m_radius_scale->set_value(5.0);
+    m_radius_scale->signal_value_changed().connect(
+        sigc::mem_fun(
+            *this,
+            &ImageViewerWindow::on_radius_slider_change),
+        false);
+
+    m_alpha_scale = m_refBuilder->get_widget<Gtk::Scale>("alpha_slider");
+    if (!m_alpha_scale)
+    {
+        throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"alpha_slider\" object in window.ui");
+    }
+    m_alpha_scale->set_value(1);
+    m_alpha_scale->signal_value_changed().connect(
+        sigc::mem_fun(
+            *this,
+            &ImageViewerWindow::on_alpha_slider_change));
+
     auto menuBuilder = Gtk::Builder::create_from_resource("/org/mt/imageviewer/menuItems.ui");
     auto menu = menuBuilder->get_object<Gio::MenuModel>("menu");
     if (!menu)
@@ -45,7 +70,6 @@ ImageViewerWindow::ImageViewerWindow(
         throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"menu\" object in menuItems.ui");
     }
     m_menu_button->set_menu_model(menu);
-
     add_action(
         "save",
         sigc::mem_fun(
@@ -76,23 +100,31 @@ void ImageViewerWindow::open_image_view(Glib::RefPtr<Gio::File> &file)
 
 void ImageViewerWindow::save_image_view()
 {
-    auto tab = dynamic_cast<CustomScrollableWindow *>(m_stack->get_visible_child());
-    if (!tab)
-    {
-        throw std::runtime_error("ImageViewerWindow::save_image_view(): No visible tab");
-    }
-    auto area = tab->get_drawing_area();
-    if (!area)
-    {
-        throw std::runtime_error("ImageViewerWindow::save_image_view(): No drawing area");
-    }
+    auto area = get_current_drawing_area();
     area->set_save_signal();
 }
 
 void ImageViewerWindow::on_color_set()
 {
     m_color = m_color_button->get_rgba();
+    auto area = get_current_drawing_area();
+    area->set_color(m_color);
+}
 
+void ImageViewerWindow::on_radius_slider_change()
+{
+    auto area = get_current_drawing_area();
+    area->set_radius(m_radius_scale->get_value());
+}
+
+void ImageViewerWindow::on_alpha_slider_change()
+{
+    auto area = get_current_drawing_area();
+    area->set_color_alpha(m_alpha_scale->get_value());
+}
+
+CustomDrawingArea *ImageViewerWindow::get_current_drawing_area()
+{
     auto tab = dynamic_cast<CustomScrollableWindow *>(m_stack->get_visible_child());
     if (!tab)
     {
@@ -103,6 +135,6 @@ void ImageViewerWindow::on_color_set()
     {
         throw std::runtime_error("ImageViewerWindow::save_image_view(): No drawing area");
     }
-
-    area->set_color(m_color);
+    return area;
 }
+
