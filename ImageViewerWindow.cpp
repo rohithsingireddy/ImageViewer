@@ -21,6 +21,12 @@ ImageViewerWindow::ImageViewerWindow(
     {
         throw std::runtime_error("ImageViewerWindow::ImageViewerWindow(): No \"stack\" object in window.ui");
     }
+    m_stack->property_visible_child()
+        .signal_changed()
+        .connect(
+            sigc::mem_fun(
+                *this,
+                &ImageViewerWindow::on_visible_child_change));
 
     m_menu_button = m_refBuilder->get_widget<Gtk::MenuButton>("menu");
     if (!m_menu_button)
@@ -138,3 +144,12 @@ CustomDrawingArea *ImageViewerWindow::get_current_drawing_area()
     return area;
 }
 
+void ImageViewerWindow::on_visible_child_change()
+{
+    auto area = get_current_drawing_area();
+    m_alpha_scale->set_value(area->get_color_alpha());
+    m_radius_scale->set_value(area->get_radius());
+    auto color = area->get_color();
+    color.set_alpha(1.0);
+    m_color_button->set_rgba(color);
+}
