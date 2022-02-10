@@ -13,13 +13,13 @@ In other environments, an executable can be compiled by executing the following 
 make
 ```
 
-To clean compiled files
+To clean compiled binaries
 ```bash
 make clean
 ```
 
 ## Notes
-- To create a resources.c file from ui_resources/file_opener.gresources.xml
+- To create a resources.c file from ui_resources/imageViewer.gresources.xml
 ```bash
 cd ./ui_resources/
 glib-compile-resources --target=resources.c --generate-source imageViewer.gresources.xml
