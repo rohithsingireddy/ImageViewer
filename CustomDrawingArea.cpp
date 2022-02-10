@@ -78,6 +78,8 @@ void CustomDrawingArea::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int wid
     if (m_signal_to_save)
     {
         cr->get_target()->write_to_png(m_file->get_path());
+        m_changes.clear();
+        m_image = Gdk::Pixbuf::create_from_file(m_file->get_path());
         m_signal_to_save = false;
     }
     cr->restore();
