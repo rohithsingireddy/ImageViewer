@@ -4,11 +4,34 @@
         <property name="title" translatable="yes">Image Viewer </property>
         <property name="maximized">True</property>
         <property name="hide-on-close">True</property>
-        <property name="default-width">600</property>
-        <property name="default-height">500</property>
+        <property name="default-width">1920</property>
+        <property name="default-height">1080</property>
         <child type="titlebar">
             <object class="GtkHeaderBar" id="header">
                 <property name="decoration-layout">icon:close</property>
+                <child type="start">
+                    <object class="GtkLabel" id="size_label">
+                        <property name="label" translatable="yes">Size:</property>
+                    </object>
+                </child>
+                <child type="start">
+                    <object class="GtkScale" id="radius_slider">
+                        <property name="orientation">horizontal</property>
+                        <property name="draw-value">True</property>
+                        <property name="value-pos">right</property>
+                        <property name="digits">2</property>
+                        <property name="adjustment">
+                            <object class="GtkAdjustment" id="distance-adjustment-1">
+                                <property name="value">5</property>
+                                <property name="lower">2</property>
+                                <property name="upper">100</property>
+                                <property name="step-increment">0.1</property>
+                                <property name="page-increment">0</property>
+                                <property name="page-size">0</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
                 <child type="title">
                     <object class="GtkStackSwitcher" id="tabs">
                         <property name="stack">stack</property>
@@ -24,6 +47,30 @@
                     <object class="GtkColorButton" id="color_label">
                     </object>
                 </child>
+                <child type="end">
+                    <object class="GtkScale" id="alpha_slider">
+                        <property name="orientation">horizontal</property>
+                        <property name="draw-value">True</property>
+                        <property name="value-pos">right</property>
+                        <property name="digits">2</property>
+                        <property name="adjustment">
+                            <object class="GtkAdjustment" id="distance-adjustment-2">
+                                <property name="value">1</property>
+                                <property name="lower">0</property>
+                                <property name="upper">1</property>
+                                <property name="step-increment">0.01</property>
+                                <property name="page-increment">0</property>
+                                <property name="page-size">0</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
+                <child type="end">
+                    <object class="GtkLabel" id="alpha_label">
+                        <property name="label" translatable="yes">Alpha:</property>
+                    </object>
+                </child>
+
             </object>
         </child>
 
