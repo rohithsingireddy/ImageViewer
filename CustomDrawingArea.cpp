@@ -17,7 +17,7 @@ CustomDrawingArea::CustomDrawingArea(Glib::RefPtr<Gio::File> file, Gdk::RGBA col
       m_alpha(1.0)
 {
     m_file = file;
-    std::string fileName = m_file->get_basename();
+    std::string fileName = m_file->get_path();
     m_image = Gdk::Pixbuf::create_from_file(fileName);
     if (!m_image)
     {
@@ -140,13 +140,28 @@ void CustomDrawingArea::set_color(Gdk::RGBA color)
     m_color.set_alpha(m_alpha);
 }
 
+Gdk::RGBA CustomDrawingArea::get_color()
+{
+    return m_color;
+}
+
 void CustomDrawingArea::set_radius(double radius)
 {
     m_radius = radius;
+}
+
+double CustomDrawingArea::get_radius()
+{
+    return m_radius;
 }
 
 void CustomDrawingArea::set_color_alpha(double alpha = 1.0)
 {
     m_alpha = alpha;
     m_color.set_alpha(alpha);
+}
+
+double CustomDrawingArea::get_color_alpha()
+{
+    return m_alpha;
 }
